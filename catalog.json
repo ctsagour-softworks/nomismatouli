@@ -97,5 +97,25 @@
     "notes_en": "",
     "son_note_el": "",
     "son_note_en": ""
+  },
+  {
+    "id": "C-0005",
+    "type": "coin",
+    "country": "GR",
+    "year": 2026,
+    "title_el": "",
+    "title_en": "",
+    "catalog_ref": "",
+    "grade": "",
+    "price_eur": 2,
+    "status": "available",
+    "images": [
+      "C-0005-a.jpg",
+      null
+    ],
+    "notes_el": "",
+    "notes_en": "",
+    "son_note_el": "",
+    "son_note_en": ""
   }
 ]
