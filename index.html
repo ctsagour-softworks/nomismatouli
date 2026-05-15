@@ -122,12 +122,14 @@
 
   .brand-name {
     font-family: 'DM Serif Display', serif;
-    font-size: clamp(64px, 11vw, 148px);
-    line-height: 0.85;
+    font-size: clamp(42px, 8.5vw, 148px);
+    line-height: 0.9;
     letter-spacing: -0.04em;
     color: var(--sea-deep);
     margin: 0;
     font-weight: 400;
+    white-space: nowrap;
+    hyphens: none;
   }
   .brand-name .accent {
     color: var(--sun-deep);
@@ -523,6 +525,297 @@
     font-style: italic;
   }
 
+  /* "Add to notebook" button on cards */
+  .add-to-notebook-btn {
+    margin-top: 14px;
+    width: 100%;
+    padding: 10px 14px;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+    background: transparent;
+    border: 1.5px solid var(--ink);
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .add-to-notebook-btn:hover {
+    background: var(--sea-deep);
+    border-color: var(--sea-deep);
+    color: var(--paper);
+  }
+  .add-to-notebook-btn.added {
+    background: var(--olive);
+    border-color: var(--olive);
+    color: var(--paper);
+    pointer-events: none;
+  }
+  .add-to-notebook-btn svg { width: 16px; height: 16px; }
+  .card.sold .add-to-notebook-btn,
+  .card.reserved .add-to-notebook-btn { display: none; }
+
+  /* Floating notebook button (bottom-right) */
+  .notebook-fab {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 60;
+    background: var(--sea-deep);
+    color: var(--paper);
+    border: 2px solid var(--sun);
+    padding: 14px 20px 14px 18px;
+    border-radius: 100px;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(10, 61, 92, 0.35);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s;
+    transform: translateY(80px);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .notebook-fab.visible {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .notebook-fab:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgba(10, 61, 92, 0.45);
+  }
+  .notebook-fab svg { width: 20px; height: 20px; }
+  .notebook-fab .count {
+    background: var(--sun);
+    color: var(--sea-deep);
+    border-radius: 100px;
+    padding: 2px 9px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    min-width: 22px;
+    text-align: center;
+  }
+  .notebook-fab.bump { animation: bump 0.4s ease; }
+  @keyframes bump {
+    0%, 100% { transform: translateY(0) scale(1); }
+    30% { transform: translateY(-6px) scale(1.08); }
+  }
+
+  /* Notebook modal */
+  .notebook-modal {
+    background: var(--paper);
+    max-width: 640px;
+    width: 100%;
+    max-height: 92vh;
+    overflow-y: auto;
+    position: relative;
+    border-radius: 2px;
+    box-shadow: 0 30px 80px rgba(10, 61, 92, 0.4);
+    animation: lift 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .notebook-header {
+    padding: 28px 32px 20px;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+    background: linear-gradient(180deg, var(--paper-warm), transparent);
+  }
+  .notebook-header .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--coral);
+    margin-bottom: 6px;
+  }
+  .notebook-header h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 36px;
+    font-weight: 400;
+    color: var(--sea-deep);
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+  .notebook-body {
+    padding: 0 32px;
+  }
+  .notebook-item {
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    gap: 14px;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px dashed var(--line);
+  }
+  .notebook-item:last-child { border-bottom: none; }
+  .notebook-item.unavailable { opacity: 0.45; }
+  .notebook-thumb {
+    width: 60px; height: 60px;
+    object-fit: cover;
+    background: var(--paper-warm);
+    border: 1px solid var(--line);
+    display: block;
+  }
+  .notebook-thumb.missing {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-soft);
+    font-size: 20px;
+  }
+  .notebook-info .ni-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.2px;
+    color: var(--ink-soft);
+    margin-bottom: 2px;
+  }
+  .notebook-info .ni-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--sea-deep);
+    line-height: 1.2;
+    margin-bottom: 2px;
+  }
+  .notebook-info .ni-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: 0.5px;
+  }
+  .notebook-info .ni-warning {
+    color: var(--coral);
+    font-size: 11px;
+    margin-top: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .notebook-item .ni-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+  .notebook-item .ni-price {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--sun-deep);
+    line-height: 1;
+  }
+  .notebook-item .ni-remove {
+    background: transparent;
+    border: none;
+    color: var(--ink-soft);
+    cursor: pointer;
+    padding: 4px 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius: 2px;
+    transition: all 0.15s;
+  }
+  .notebook-item .ni-remove:hover { background: var(--coral); color: var(--paper); }
+
+  .notebook-empty {
+    padding: 60px 20px;
+    text-align: center;
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--ink-soft);
+  }
+  .notebook-empty::before {
+    content: '🗒';
+    display: block;
+    font-size: 48px;
+    margin-bottom: 12px;
+    font-style: normal;
+  }
+
+  .notebook-total {
+    padding: 20px 32px;
+    border-top: 2px solid var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    background: var(--paper-warm);
+  }
+  .notebook-total .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .notebook-total .amount {
+    font-family: 'DM Serif Display', serif;
+    font-size: 42px;
+    color: var(--sea-deep);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .notebook-actions {
+    padding: 24px 32px 28px;
+  }
+  .notebook-actions .send-heading {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 12px;
+  }
+  .notebook-actions .clear-btn {
+    margin-top: 14px;
+    background: transparent;
+    border: 1.5px solid var(--line);
+    color: var(--ink-soft);
+    padding: 10px 16px;
+    width: 100%;
+    cursor: pointer;
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    transition: all 0.15s;
+  }
+  .notebook-actions .clear-btn:hover {
+    border-color: var(--coral);
+    color: var(--coral);
+  }
+
+  /* Toast for "added to notebook" */
+  .micro-toast {
+    position: fixed;
+    bottom: 100px;
+    right: 28px;
+    background: var(--sea-deep);
+    color: var(--paper);
+    padding: 12px 18px;
+    border-left: 3px solid var(--sun);
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 65;
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity 0.25s, transform 0.25s;
+    pointer-events: none;
+    box-shadow: 0 6px 20px rgba(10, 61, 92, 0.25);
+  }
+  .micro-toast.show { opacity: 1; transform: translateX(0); }
+
   /* Card entrance */
   .card { animation: rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) backwards; }
   @keyframes rise {
@@ -715,10 +1008,11 @@
   }
   .contact-buttons {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(4, 1fr);
     gap: 8px;
   }
-  @media (max-width: 600px) { .contact-buttons { grid-template-columns: 1fr; } }
+  @media (max-width: 720px) { .contact-buttons { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 420px) { .contact-buttons { grid-template-columns: 1fr; } }
   .contact-btn {
     display: flex;
     align-items: center;
@@ -740,8 +1034,9 @@
     background: var(--ink);
     color: var(--paper);
   }
-  .contact-btn.viber:hover { background: #7360f2; border-color: #7360f2; }
-  .contact-btn.messenger:hover { background: #0084ff; border-color: #0084ff; }
+  .contact-btn.viber:hover { background: #7360f2; border-color: #7360f2; color: white; }
+  .contact-btn.whatsapp:hover { background: #25d366; border-color: #25d366; color: white; }
+  .contact-btn.messenger:hover { background: #0084ff; border-color: #0084ff; color: white; }
   .contact-btn.email:hover { background: var(--coral); border-color: var(--coral); }
   .contact-btn.disabled {
     background: var(--line);
@@ -867,8 +1162,7 @@
 
   <div class="hero-grid">
     <h1 class="brand-name">
-      <span>Ν<span class="o-decor">ο</span>μισμα-</span><br>
-      <span>τ<span class="accent">ού</span>λι</span>
+      <span>Ν<span class="o-decor">ο</span>μισματ<span class="accent">ού</span>λι</span>
     </h1>
     <div class="hero-meta">
       <p class="tagline">
@@ -877,8 +1171,8 @@
       </p>
       <div class="credits">
         <span class="dot">●</span>
-        <span class="el">από τον Χρήστο &amp; τον γιο του</span>
-        <span class="en">by Chris &amp; his son</span>
+        <span class="el">από τον Χρήστο &amp; τους Υιούς του</span>
+        <span class="en">by Chris &amp; his sons</span>
         <span class="dot">●</span>
         <span>EST. 2026</span>
       </div>
@@ -897,13 +1191,13 @@
     <span class="en">— A note</span>
   </div>
   <div class="intro-body">
-    <p class="el">Είμαι ο Χρήστος, συλλέκτης νομισμάτων και γραμματοσήμων εδώ και χρόνια. Αυτό το μικρό site το φτιάχνω μαζί με τον γιο μου — βοηθάει με την καταλογογράφηση, διαλέγει τα αγαπημένα του, και γράφει σημειώσεις για κάποια κομμάτια.</p>
-    <p class="el">Όλα όσα βλέπετε εδώ είναι διπλά κομμάτια από τη συλλογή μας. Τα πουλάμε για να αγοράζουμε άλλα που μας λείπουν. Οι συναλλαγές γίνονται πάντα από κοντά στην Κω, μετρητά στο χέρι — χωρίς αποστολές, χωρίς πλατφόρμες, χωρίς προμήθειες.</p>
-    <p class="en">I'm Chris, a long-time coin and stamp collector. I put this little site together with my son — he helps with cataloguing, picks his favourites, and writes notes on certain pieces.</p>
+    <p class="el">Είμαι ο Χρήστος, συλλέκτης νομισμάτων και γραμματοσήμων εδώ και χρόνια. Αυτό το μικρό site το φτιάχνω μαζί με τους γιούς μου Ανδρέα και Μάνο — βοηθάνε με την καταχώρηση, διαλέγουν τα αγαπημένα τους, και γράφουν σημειώσεις για κάποια κομμάτια.</p>
+    <p class="el">Όλα όσα βλέπετε εδώ είναι διπλά κομμάτια από τη συλλογή μας. Τα πουλάμε για να αγοράζουμε άλλα που μας λείπουν. Οι συναλλαγές γίνονται πάντα από κοντά στην Κω, — χωρίς αποστολές, χωρίς πλατφόρμες, χωρίς προμήθειες.</p>
+    <p class="en">I'm Chris, a long-time coin and stamp collector. I put this little site together with my sons Andreas and Manos — they help with the cataloguing, pick their favourites, and write notes on certain pieces.</p>
     <p class="en">Everything here is a duplicate from our collection. We sell to fund pieces we still need. All transactions happen in person on Kos, cash in hand — no shipping, no platforms, no fees.</p>
     <p class="signature">
-      <span class="el">Χρήστος &amp; γιος</span>
-      <span class="en">Chris &amp; son</span>
+      <span class="el">Χρήστος &amp; Υιοί</span>
+      <span class="en">Chris &amp; sons</span>
     </p>
   </div>
 </section>
@@ -970,15 +1264,15 @@
         <li>
           <span class="num">02</span>
           <span>
-            <span class="el">Λιμάνι — Δέντρο του Ιπποκράτη</span>
-            <span class="en">Harbour — Tree of Hippocrates</span>
+            <span class="el">Δέντρο του Ιπποκράτη</span>
+            <span class="en">Tree of Hippocrates</span>
           </span>
         </li>
         <li>
           <span class="num">03</span>
           <span>
-            <span class="el">Πλατεία Αγοράς</span>
-            <span class="en">Agora Square</span>
+            <span class="el">Ταμπέλα «I Love Kos»</span>
+            <span class="en">Sign "I Love Kos"</span>
           </span>
         </li>
         <li>
@@ -1006,15 +1300,103 @@
   <div class="modal" id="modal-content"></div>
 </div>
 
+<div class="modal-backdrop" id="notebook-modal" onclick="if(event.target===this)closeNotebookModal()">
+  <div class="notebook-modal" id="notebook-content"></div>
+</div>
+
+<button class="notebook-fab" id="notebook-fab" onclick="openNotebookModal()">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M4 4h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4z"/>
+    <path d="M4 4v18M8 8h6M8 12h6M8 16h4"/>
+  </svg>
+  <span class="el">Σημειωματάριο</span>
+  <span class="en">Notebook</span>
+  <span class="count">0</span>
+</button>
+
 <script>
+  const ICONS = {
+    viber:     '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6 2 11c0 2.4 1.1 4.6 2.9 6.2L4 22l5-1.4c.9.2 1.9.4 3 .4 5.5 0 10-4 10-9s-4.5-10-10-10z"/></svg>',
+    whatsapp:  '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8.9-.9 1.1-.2.2-.4.2-.7 0-.3-.1-1.2-.4-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.4.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4 0 1.4 1 2.8 1.2 3 .1.2 2 3 4.8 4.2 1.8.8 2.5.8 3.4.7.5-.1 1.7-.7 2-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 2.1C6.5 2.1 2.1 6.5 2.1 12c0 1.7.4 3.4 1.3 4.9L2 22l5.3-1.4c1.4.8 3.1 1.2 4.7 1.2 5.5 0 9.9-4.4 9.9-9.9S17.5 2.1 12 2.1z"/></svg>',
+    messenger: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12c0 1 2 5 5 8h4v-7H8v-3h3V8c0-2.5 1.5-4 4-4 1.5 0 2 .5 2 .5V7h-2c-1 0-1 .5-1 1v3h3l-1 3h-2v7c4-1 7-5 7-9 0-5.5-4.5-10-10-10z"/></svg>',
+    email:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="m3 7 9 6 9-6"/></svg>'
+  };
+
   const CONTACT = {
     viber:     "306909409701",
+    whatsapp:  "306909409701",
     messenger: "christos.tsagournos",
     email:     "ctsagour@yahoo.com"
   };
 
   let CATALOG = [];
   let state = { lang: 'el', filter_type: 'all', search: '' };
+  let notebook = []; // array of item IDs
+
+  const NOTEBOOK_KEY = 'nomismatouli_notebook_v1';
+
+  function loadNotebook() {
+    try {
+      const raw = localStorage.getItem(NOTEBOOK_KEY);
+      notebook = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(notebook)) notebook = [];
+    } catch (e) { notebook = []; }
+  }
+  function saveNotebook() {
+    try { localStorage.setItem(NOTEBOOK_KEY, JSON.stringify(notebook)); } catch (e) {}
+  }
+  function inNotebook(id) { return notebook.includes(id); }
+  function addToNotebook(id, ev) {
+    if (ev) ev.stopPropagation();
+    const item = CATALOG.find(i => i.id === id);
+    if (!item || item.status !== 'available') return; // guard
+    if (!inNotebook(id)) {
+      notebook.push(id);
+      saveNotebook();
+      render();
+      updateNotebookFab(true);
+      showMicroToast(LABELS[state.lang].addedMicro);
+    }
+  }
+  function removeFromNotebook(id) {
+    notebook = notebook.filter(x => x !== id);
+    saveNotebook();
+    render();
+    updateNotebookFab(false);
+    renderNotebookModal();
+  }
+  function clearNotebook() {
+    notebook = [];
+    saveNotebook();
+    render();
+    updateNotebookFab(false);
+    renderNotebookModal();
+  }
+  function showMicroToast(msg) {
+    let el = document.getElementById('micro-toast');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'micro-toast';
+      el.className = 'micro-toast';
+      document.body.appendChild(el);
+    }
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove('show'), 1800);
+  }
+  function updateNotebookFab(animate) {
+    const fab = document.getElementById('notebook-fab');
+    if (!fab) return;
+    const count = notebook.length;
+    fab.querySelector('.count').textContent = count;
+    fab.classList.toggle('visible', count > 0);
+    if (animate && count > 0) {
+      fab.classList.remove('bump');
+      void fab.offsetWidth;
+      fab.classList.add('bump');
+    }
+  }
 
   const LABELS = {
     el: {
@@ -1025,11 +1407,24 @@
       front: 'Εμπρός', back: 'Πίσω',
       catalog: 'Κατάλογος', grade: 'Κατάσταση', year: 'Έτος', country: 'Χώρα',
       contactHeading: 'Επικοινωνία',
-      viber: 'Viber', messenger: 'Messenger', email: 'Email',
+      viber: 'Viber', whatsapp: 'WhatsApp', messenger: 'Messenger', email: 'Email',
       sold: 'ΠΟΥΛΗΘΗΚΕ', reserved: 'ΚΡΑΤΗΣΗ',
       reservedNote: 'Έχει κράτηση αυτή τη στιγμή — επικοινωνήστε για λίστα αναμονής.',
       msgSubject: 'Ενδιαφέρον για',
-      msgBody: 'Γεια σας, ενδιαφέρομαι για το'
+      msgBody: 'Γεια σας, ενδιαφέρομαι για το',
+      addToNotebook: 'Στο σημειωματάριο',
+      addedToNotebook: 'Προστέθηκε ✓',
+      notebookTitle: 'Σημειωματάριο',
+      notebookLabel: '— Επιλογές μου',
+      notebookEmpty: 'Το σημειωματάριο είναι άδειο.\nΠρόσθεσε κομμάτια από τις κάρτες.',
+      notebookTotal: 'Σύνολο',
+      sendVia: 'Στείλε όλη τη λίστα μέσω:',
+      clearNotebook: 'Άδειασμα σημειωματαρίου',
+      remove: 'Αφαίρεση',
+      unavailable: 'Δεν διαθέσιμο πια',
+      bulkMsgIntro: 'Γεια σας, ενδιαφέρομαι για τα παρακάτω κομμάτια:',
+      bulkMsgTotal: 'Σύνολο',
+      addedMicro: 'Στο σημειωματάριο'
     },
     en: {
       searchPlaceholder: 'Search…',
@@ -1039,11 +1434,24 @@
       front: 'Front', back: 'Back',
       catalog: 'Catalog', grade: 'Grade', year: 'Year', country: 'Country',
       contactHeading: 'Get in touch',
-      viber: 'Viber', messenger: 'Messenger', email: 'Email',
+      viber: 'Viber', whatsapp: 'WhatsApp', messenger: 'Messenger', email: 'Email',
       sold: 'SOLD', reserved: 'RESERVED',
       reservedNote: 'Currently reserved — get in touch for the waitlist.',
       msgSubject: 'Interested in',
-      msgBody: "Hello, I'm interested in"
+      msgBody: "Hello, I'm interested in",
+      addToNotebook: 'Add to notebook',
+      addedToNotebook: 'Added ✓',
+      notebookTitle: 'Notebook',
+      notebookLabel: '— My picks',
+      notebookEmpty: 'Your notebook is empty.\nAdd pieces from the cards.',
+      notebookTotal: 'Total',
+      sendVia: 'Send the whole list via:',
+      clearNotebook: 'Clear notebook',
+      remove: 'Remove',
+      unavailable: 'No longer available',
+      bulkMsgIntro: "Hello, I'm interested in the following pieces:",
+      bulkMsgTotal: 'Total',
+      addedMicro: 'Added to notebook'
     }
   };
 
@@ -1144,24 +1552,39 @@
       const cname = state.lang === 'el' ? country.el : country.en;
       const notes = (state.lang === 'el' ? item.notes_el : item.notes_en) || '';
       const statusLabel = item.status === 'sold' ? L.sold : (item.status === 'reserved' ? L.reserved : '');
+      const isAvailable = (item.status || 'available') === 'available';
+      const added = inNotebook(item.id);
+      const notebookBtn = isAvailable ? `
+        <button class="add-to-notebook-btn ${added ? 'added' : ''}" onclick="addToNotebook('${item.id}', event)">
+          ${added ? `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5 9-11"/></svg>
+            ${L.addedToNotebook}
+          ` : `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            ${L.addToNotebook}
+          `}
+        </button>` : '';
 
       return `
-        <article class="card ${item.status || 'available'}" onclick="openModal('${item.id}')">
-          ${cardPhotoHTML(item)}
-          <div class="price-tag">${item.price_eur}€</div>
-          ${statusLabel ? `<div class="status-overlay">${statusLabel}</div>` : ''}
-          <div class="card-body">
-            <h4 class="card-title">${title || item.id}</h4>
-            <div class="card-meta">
-              <span class="flag">${country.flag}</span>
-              <span>${cname}</span>
-              <span class="sep">/</span>
-              <span>${item.year || ''}</span>
-              <span class="sep">/</span>
-              <span>${item.grade || ''}</span>
+        <article class="card ${item.status || 'available'}">
+          <div onclick="openModal('${item.id}')" style="cursor:pointer;">
+            ${cardPhotoHTML(item)}
+            <div class="price-tag">${item.price_eur}€</div>
+            ${statusLabel ? `<div class="status-overlay">${statusLabel}</div>` : ''}
+            <div class="card-body">
+              <h4 class="card-title">${title || item.id}</h4>
+              <div class="card-meta">
+                <span class="flag">${country.flag}</span>
+                <span>${cname}</span>
+                <span class="sep">/</span>
+                <span>${item.year || ''}</span>
+                <span class="sep">/</span>
+                <span>${item.grade || ''}</span>
+              </div>
+              ${notes ? `<p class="card-notes">${notes}</p>` : ''}
             </div>
-            ${notes ? `<p class="card-notes">${notes}</p>` : ''}
           </div>
+          ${notebookBtn}
         </article>
       `;
     }).join('');
@@ -1180,12 +1603,27 @@
     const itemLabel = `${item.id} — ${title || ''} (${item.price_eur}€)`;
     const msgText = `${L.msgBody} ${itemLabel}`;
     const viberUrl     = `viber://chat?number=%2B${encodeURIComponent(CONTACT.viber)}&draft=${encodeURIComponent(msgText)}`;
+    const whatsappUrl  = `https://wa.me/${encodeURIComponent(CONTACT.whatsapp)}?text=${encodeURIComponent(msgText)}`;
     const messengerUrl = `https://m.me/${encodeURIComponent(CONTACT.messenger)}?text=${encodeURIComponent(msgText)}`;
     const mailUrl      = `mailto:${encodeURIComponent(CONTACT.email)}?subject=${encodeURIComponent(L.msgSubject + ' ' + item.id)}&body=${encodeURIComponent(msgText)}`;
 
-    const viberSvg = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6 2 11c0 2.4 1.1 4.6 2.9 6.2L4 22l5-1.4c.9.2 1.9.4 3 .4 5.5 0 10-4 10-9s-4.5-10-10-10z"/></svg>';
-    const fbSvg = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12c0 1 2 5 5 8h4v-7H8v-3h3V8c0-2.5 1.5-4 4-4 1.5 0 2 .5 2 .5V7h-2c-1 0-1 .5-1 1v3h3l-1 3h-2v7c4-1 7-5 7-9 0-5.5-4.5-10-10-10z"/></svg>';
-    const mailSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="m3 7 9 6 9-6"/></svg>';
+    const viberSvg = ICONS.viber;
+    const waSvg = ICONS.whatsapp;
+    const fbSvg = ICONS.messenger;
+    const mailSvg = ICONS.email;
+
+    const isAvailable = item.status === 'available';
+    const added = inNotebook(item.id);
+    const notebookBtnModal = isAvailable ? `
+      <button class="add-to-notebook-btn ${added ? 'added' : ''}" onclick="addToNotebook('${item.id}', event)" style="margin-bottom:20px;margin-top:0;">
+        ${added ? `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5 9-11"/></svg>
+          ${L.addedToNotebook}
+        ` : `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+          ${L.addToNotebook}
+        `}
+      </button>` : '';
 
     let contactHtml;
     if (item.status === 'sold') {
@@ -1199,6 +1637,7 @@
           <div class="contact-heading">${L.contactHeading}</div>
           <div class="contact-buttons">
             <a class="contact-btn viber" href="${viberUrl}">${viberSvg} ${L.viber}</a>
+            <a class="contact-btn whatsapp" href="${whatsappUrl}" target="_blank" rel="noopener">${waSvg} ${L.whatsapp}</a>
             <a class="contact-btn messenger" href="${messengerUrl}" target="_blank" rel="noopener">${fbSvg} ${L.messenger}</a>
             <a class="contact-btn email" href="${mailUrl}">${mailSvg} ${L.email}</a>
           </div>
@@ -1222,6 +1661,7 @@
         ${notes ? `<p class="modal-notes">${notes}</p>` : ''}
         ${sonNote ? `<div class="son-note"><span class="quote-mark">"</span>${sonNote}</div>` : ''}
         <div class="modal-price">${item.price_eur}€</div>
+        ${notebookBtnModal}
         ${contactHtml}
       </div>
     `;
@@ -1229,10 +1669,156 @@
   }
 
   function closeModal() { document.getElementById('modal').classList.remove('open'); }
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      closeModal();
+      closeNotebookModal();
+    }
+  });
+
+  // ============ NOTEBOOK MODAL ============
+  function openNotebookModal() {
+    renderNotebookModal();
+    document.getElementById('notebook-modal').classList.add('open');
+  }
+  function closeNotebookModal() {
+    document.getElementById('notebook-modal').classList.remove('open');
+  }
+
+  function renderNotebookModal() {
+    const L = LABELS[state.lang];
+
+    // Auto-purge items that are no longer available
+    const before = notebook.length;
+    notebook = notebook.filter(id => {
+      const item = CATALOG.find(i => i.id === id);
+      return item && item.status === 'available';
+    });
+    if (notebook.length !== before) {
+      saveNotebook();
+      updateNotebookFab(false);
+      render();
+    }
+
+    const container = document.getElementById('notebook-content');
+
+    // Resolve items, mark unavailable
+    const items = notebook.map(id => {
+      const cur = CATALOG.find(i => i.id === id);
+      if (!cur) return { id, missing: true };
+      return cur;
+    });
+
+    if (items.length === 0) {
+      container.innerHTML = `
+        <button class="close" onclick="closeNotebookModal()" style="position:absolute;top:18px;right:18px;background:var(--paper);border:1.5px solid var(--ink);color:var(--ink);width:38px;height:38px;border-radius:50%;font-size:18px;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;font-family:inherit;">✕</button>
+        <div class="notebook-header">
+          <div class="label">${L.notebookLabel}</div>
+          <h3>${L.notebookTitle}</h3>
+        </div>
+        <div class="notebook-empty">${L.notebookEmpty.replace('\n', '<br>')}</div>
+      `;
+      return;
+    }
+
+    // Build item rows
+    const rows = items.map(item => {
+      if (item.missing) {
+        return `
+          <div class="notebook-item unavailable">
+            <div class="notebook-thumb missing">○</div>
+            <div class="notebook-info">
+              <div class="ni-id">${item.id}</div>
+              <div class="ni-title">${L.unavailable}</div>
+            </div>
+            <div class="ni-right">
+              <button class="ni-remove" onclick="removeFromNotebook('${item.id}')">${L.remove}</button>
+            </div>
+          </div>`;
+      }
+      const title = state.lang === 'el' ? item.title_el : item.title_en;
+      const country = COUNTRIES[item.country] || { flag: '🏳️', el: item.country, en: item.country };
+      const cname = state.lang === 'el' ? country.el : country.en;
+      const unavailable = item.status === 'sold';
+      const thumb = item.images && item.images[0]
+        ? `<img class="notebook-thumb" src="images/${item.images[0]}" onerror="this.outerHTML='<div class=&quot;notebook-thumb missing&quot;>○</div>'">`
+        : `<div class="notebook-thumb missing">○</div>`;
+      const warning = item.status === 'sold'
+        ? `<div class="ni-warning">${L.sold}</div>`
+        : item.status === 'reserved'
+          ? `<div class="ni-warning" style="color:var(--sun-deep);">⚠ ${L.reserved}</div>`
+          : '';
+      return `
+        <div class="notebook-item ${unavailable ? 'unavailable' : ''}">
+          ${thumb}
+          <div class="notebook-info">
+            <div class="ni-id">${item.id} · ${country.flag} ${cname} · ${item.year || ''}</div>
+            <div class="ni-title">${title || item.id}</div>
+            <div class="ni-meta">${item.grade || ''}${item.catalog_ref ? ' · ' + item.catalog_ref : ''}</div>
+            ${warning}
+          </div>
+          <div class="ni-right">
+            <span class="ni-price">${item.price_eur}€</span>
+            <button class="ni-remove" onclick="removeFromNotebook('${item.id}')">${L.remove}</button>
+          </div>
+        </div>`;
+    }).join('');
+
+    // Calculate total — all items in notebook are available (purged above)
+    const total = items.filter(it => !it.missing)
+                       .reduce((sum, it) => sum + (parseFloat(it.price_eur) || 0), 0);
+
+    // Bulk message
+    const lines = items.filter(it => !it.missing).map(it => {
+      const t = state.lang === 'el' ? it.title_el : it.title_en;
+      return `• ${it.id} — ${t || ''} (${it.price_eur}€)`;
+    });
+    const totalLine = `\n${L.bulkMsgTotal}: ${total}€`;
+    const bulkMsg = `${L.bulkMsgIntro}\n\n${lines.join('\n')}${totalLine}`;
+
+    const sendableItems = items.filter(it => !it.missing);
+    const canSend = sendableItems.length > 0;
+    const viberUrl     = `viber://chat?number=%2B${encodeURIComponent(CONTACT.viber)}&draft=${encodeURIComponent(bulkMsg)}`;
+    const whatsappUrl  = `https://wa.me/${encodeURIComponent(CONTACT.whatsapp)}?text=${encodeURIComponent(bulkMsg)}`;
+    const messengerUrl = `https://m.me/${encodeURIComponent(CONTACT.messenger)}?text=${encodeURIComponent(bulkMsg)}`;
+    const mailUrl      = `mailto:${encodeURIComponent(CONTACT.email)}?subject=${encodeURIComponent(L.msgSubject + ' ' + sendableItems.length + 'x')}&body=${encodeURIComponent(bulkMsg)}`;
+
+    const sendButtons = canSend ? `
+      <div class="notebook-actions">
+        <div class="send-heading">${L.sendVia}</div>
+        <div class="contact-buttons">
+          <a class="contact-btn viber" href="${viberUrl}">${ICONS.viber} ${L.viber}</a>
+          <a class="contact-btn whatsapp" href="${whatsappUrl}" target="_blank" rel="noopener">${ICONS.whatsapp} ${L.whatsapp}</a>
+          <a class="contact-btn messenger" href="${messengerUrl}" target="_blank" rel="noopener">${ICONS.messenger} ${L.messenger}</a>
+          <a class="contact-btn email" href="${mailUrl}">${ICONS.email} ${L.email}</a>
+        </div>
+        <button class="clear-btn" onclick="if(confirm('${L.clearNotebook}?'))clearNotebook()">${L.clearNotebook}</button>
+      </div>` : `
+      <div class="notebook-actions">
+        <button class="clear-btn" onclick="if(confirm('${L.clearNotebook}?'))clearNotebook()">${L.clearNotebook}</button>
+      </div>`;
+
+    container.innerHTML = `
+      <button class="close" onclick="closeNotebookModal()" style="position:absolute;top:18px;right:18px;z-index:10;background:var(--paper);border:1.5px solid var(--ink);color:var(--ink);width:38px;height:38px;border-radius:50%;font-size:18px;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='var(--ink)';this.style.color='var(--paper)'" onmouseout="this.style.background='var(--paper)';this.style.color='var(--ink)'">✕</button>
+      <div class="notebook-header">
+        <div class="label">${L.notebookLabel}</div>
+        <h3>${L.notebookTitle}</h3>
+      </div>
+      <div class="notebook-body">
+        ${rows}
+      </div>
+      <div class="notebook-total">
+        <span class="label">${L.notebookTotal}</span>
+        <span class="amount">${total}€</span>
+      </div>
+      ${sendButtons}
+    `;
+  }
 
   async function init() {
+    loadNotebook();
     await loadCatalog();
+    updateNotebookFab(false);
     setLang('el');
   }
   init();
