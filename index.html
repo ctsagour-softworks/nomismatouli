@@ -361,29 +361,35 @@
 
   .photo-wrap {
     position: relative;
-    aspect-ratio: 1;
     overflow: hidden;
-    background: linear-gradient(135deg, var(--foam), var(--paper-warm));
+    background: var(--paper-warm);
     border-radius: 2px;
     transition: box-shadow 0.4s ease;
+    /* No forced aspect-ratio — image defines the height */
   }
   .photo-wrap::before {
     content: '';
     position: absolute;
     inset: 0;
     background: linear-gradient(135deg, var(--sea-light), var(--foam));
-    opacity: 0.3;
+    opacity: 0.15;
     transition: background 0.4s ease;
     z-index: 1;
     pointer-events: none;
     mix-blend-mode: multiply;
   }
   .photo-wrap img {
-    width: 100%; height: 100%;
-    object-fit: cover;
+    width: 100%;
+    height: auto;
     display: block;
     position: relative;
     z-index: 2;
+    /* Full image visible, no cropping */
+  }
+
+  /* Placeholders keep a square shape since they're decorative */
+  .photo-wrap.no-image {
+    aspect-ratio: 1;
   }
 
   /* Decorative placeholders */
@@ -661,7 +667,7 @@
   .notebook-item.unavailable { opacity: 0.45; }
   .notebook-thumb {
     width: 60px; height: 60px;
-    object-fit: cover;
+    object-fit: contain;
     background: var(--paper-warm);
     border: 1px solid var(--line);
     display: block;
@@ -891,8 +897,12 @@
     background: var(--line);
   }
   .modal-photos .photo-wrap {
-    aspect-ratio: 1;
+    /* No forced square — show full image */
     border-radius: 0;
+    background: var(--paper-warm);
+  }
+  .modal-photos .photo-wrap.no-image {
+    aspect-ratio: 1; /* placeholder stays square */
   }
   .modal-photos .photo-wrap::before { display: none; }
 
@@ -1323,10 +1333,10 @@
   };
 
   const CONTACT = {
-    viber:     "306909409701",
-    whatsapp:  "306909409701",
-    messenger: "christos.tsagournos",
-    email:     "ctsagour@yahoo.com"
+    viber:     "30XXXXXXXXXX",
+    whatsapp:  "30XXXXXXXXXX",
+    messenger: "your.facebook.username",
+    email:     "you@example.com"
   };
 
   let CATALOG = [];
