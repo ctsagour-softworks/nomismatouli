@@ -54,27 +54,27 @@
     "status": "available",
     "title_el": "#455_6_SÃO TOMÉ AND PRÍNCIPE",
     "title_en": "#455_6_SÃO TOMÉ AND PRÍNCIPE",
-    "type": "coin",
+    "type": "stamp",
     "year": null
   },
   {
-    "id": "C-0005",
-    "type": "stamp",
-    "country": "GR",
-    "year": null,
-    "title_el": "#669_50_ΕΛΛΑΔΑ",
-    "title_en": "#669_50_GREECE",
     "catalog_ref": "",
+    "country": "",
     "grade": "USED",
-    "price_eur": 5,
-    "status": "available",
+    "id": "C-0005",
     "images": [
       "C-0005-a.jpg",
       null
     ],
     "notes_el": "Μικρή συλλογή 50 γραμματοσήμων",
     "notes_en": "Small collection of 50 stamps",
+    "price_eur": 5,
     "son_note_el": "",
-    "son_note_en": ""
+    "son_note_en": "",
+    "status": "available",
+    "title_el": "#669_50_ΕΛΛΑΔΑ",
+    "title_en": "#669_50_GREECE",
+    "type": "stamp",
+    "year": null
   }
 ]
