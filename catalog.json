@@ -56,5 +56,25 @@
     "title_en": "#455_6_SÃO TOMÉ AND PRÍNCIPE",
     "type": "stamp",
     "year": null
+  },
+  {
+    "id": "C-0005",
+    "type": "stamp",
+    "country": "GR",
+    "year": null,
+    "title_el": "#669_50_ΕΛΛΑΔΑ",
+    "title_en": "#669_50_GREECE",
+    "catalog_ref": "",
+    "grade": "USED",
+    "price_eur": 5,
+    "status": "available",
+    "images": [
+      "C-0005-a.jpg",
+      null
+    ],
+    "notes_el": "50 Γραμματόσημα",
+    "notes_en": "50 stamps",
+    "son_note_el": "",
+    "son_note_en": ""
   }
 ]
