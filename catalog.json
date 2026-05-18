@@ -58,22 +58,62 @@
     "year": null
   },
   {
-    "id": "C-0005",
-    "type": "stamp",
-    "country": "GR",
-    "year": null,
-    "title_el": "#669_50_ΕΛΛΑΔΑ",
-    "title_en": "#669_50_GREECE",
     "catalog_ref": "",
+    "country": "GR",
     "grade": "USED",
-    "price_eur": 5,
-    "status": "available",
+    "id": "C-0005",
     "images": [
       "C-0005-a.jpg",
       null
     ],
     "notes_el": "50 Γραμματόσημα",
     "notes_en": "50 stamps",
+    "price_eur": 5,
+    "son_note_el": "",
+    "son_note_en": "",
+    "status": "available",
+    "title_el": "#669_50_ΕΛΛΑΔΑ",
+    "title_en": "#669_50_GREECE",
+    "type": "stamp",
+    "year": null
+  },
+  {
+    "id": "C-0006",
+    "type": "stamp",
+    "country": "",
+    "year": null,
+    "title_el": "ROMANIA [41] #734 ",
+    "title_en": "ROMANIA [41] #734 ",
+    "catalog_ref": "",
+    "grade": "USED",
+    "price_eur": 2.5,
+    "status": "available",
+    "images": [
+      "C-0006-a.jpg",
+      null
+    ],
+    "notes_el": "ROMANIA, λοτ από 41 γραμματόσημα, 2,5 ευρώ, Σφραγισμένα\n",
+    "notes_en": "ROMANIA, lot of 41 stamps, 2.5 euros, Cancelled",
+    "son_note_el": "",
+    "son_note_en": ""
+  },
+  {
+    "id": "C-0007",
+    "type": "stamp",
+    "country": "GR",
+    "year": null,
+    "title_el": "GREECE [50] #735 ",
+    "title_en": "GREECE [50] #735 ",
+    "catalog_ref": "",
+    "grade": "USED",
+    "price_eur": 3,
+    "status": "available",
+    "images": [
+      "C-0007-a.jpg",
+      null
+    ],
+    "notes_el": "GREECE, λοτ από 50 γραμματόσημα, 3 ευρώ, Σφραγισμένα\n",
+    "notes_en": "GREECE, lot of 50 stamps, 3 euros, Stamped",
     "son_note_el": "",
     "son_note_en": ""
   }
