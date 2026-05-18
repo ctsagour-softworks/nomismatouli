@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Νομισματούλι · Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sea-deep:    #0a3d5c;
+    --sea-mid:     #1d6a8e;
+    --sea-light:   #4ba7c7;
+    --foam:        #b8e0e6;
+    --paper:       #fdfbf5;
+    --paper-warm:  #f5ede0;
+    --sun:         #f6b53b;
+    --sun-deep:    #e8821a;
+    --coral:       #d94a3e;
+    --olive:       #6b8e4e;
+    --ink:         #1a2a3a;
+    --ink-soft:    #4a5868;
+    --line:        #d8e0e3;
+    --bg:          #f5f1e8;
+    --panel:       #fdfbf5;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Manrope', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 14px;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .topbar {
+    background: var(--sea-deep);
+    color: var(--paper);
+    padding: 14px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-bottom: 2px solid var(--sun);
+  }
+  .topbar h1 {
+    margin: 0;
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .topbar h1 .mark { color: var(--sun); }
+  .topbar h1 .sub {
+    color: var(--foam);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+  .topbar-actions { display: flex; gap: 8px; align-items: center; }
+
+  button, .btn {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    padding: 8px 16px;
+    background: transparent;
+    color: var(--paper);
+    border: 1.5px solid rgba(253, 251, 245, 0.4);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  button:hover { background: rgba(253, 251, 245, 0.1); border-color: var(--paper); }
+
+  /* Buttons on light backgrounds */
+  .light-btn {
+    color: var(--ink);
+    border-color: var(--ink);
+    background: transparent;
+  }
+  .light-btn:hover { background: var(--ink); color: var(--paper); }
+
+  button.primary {
+    background: var(--sun);
+    border-color: var(--sun);
+    color: var(--sea-deep);
+    font-weight: 600;
+  }
+  button.primary:hover { background: var(--sun-deep); border-color: var(--sun-deep); color: var(--paper); }
+
+  button.danger {
+    background: var(--coral);
+    border-color: var(--coral);
+    color: var(--paper);
+  }
+  button.danger:hover { opacity: 0.85; }
+  button.ghost { background: transparent; }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .topbar a.btn { text-decoration: none; display: inline-flex; align-items: center; }
+
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 480px;
+    gap: 0;
+    min-height: calc(100vh - 60px);
+  }
+  @media (max-width: 1024px) { .main { grid-template-columns: 1fr; } }
+
+  /* ===== LEFT: list pane ===== */
+  .list-pane {
+    padding: 20px 24px;
+    overflow-y: auto;
+    max-height: calc(100vh - 60px);
+    background: var(--bg);
+  }
+
+  .list-toolbar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .list-toolbar input[type="text"],
+  .list-toolbar select {
+    padding: 8px 12px;
+    background: var(--panel);
+    border: 1.5px solid var(--line);
+    color: var(--ink);
+    border-radius: 2px;
+    font-family: inherit;
+    font-size: 13px;
+  }
+  .list-toolbar input[type="text"] { flex: 1; min-width: 200px; }
+  .list-toolbar input[type="text"]:focus,
+  .list-toolbar select:focus { outline: none; border-color: var(--sea-deep); }
+
+  .summary {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--ink-soft);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+  }
+  th {
+    text-align: left;
+    padding: 12px 12px;
+    background: var(--paper-warm);
+    border-bottom: 1.5px solid var(--line);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    color: var(--ink-soft);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    position: sticky;
+    top: 0;
+  }
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+  }
+
+  tr.row { cursor: pointer; transition: background 0.15s; }
+  tr.row:hover td { background: rgba(75, 167, 199, 0.08); }
+  tr.row.selected td { background: rgba(246, 181, 59, 0.2); }
+  tr.row.selected td:first-child { box-shadow: inset 3px 0 0 var(--sun-deep); }
+
+  .thumb {
+    width: 44px; height: 44px;
+    background: var(--paper-warm);
+    border: 1px solid var(--line);
+    object-fit: contain;
+    display: block;
+    border-radius: 2px;
+  }
+  .thumb.missing {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-soft);
+    font-size: 18px;
+  }
+
+  .status-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .status-pill.available { background: rgba(107, 142, 78, 0.15); color: var(--olive); }
+  .status-pill.reserved  { background: rgba(232, 130, 26, 0.15); color: var(--sun-deep); }
+  .status-pill.sold      { background: rgba(217, 74, 62, 0.15); color: var(--coral); }
+
+  .mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+
+  /* ===== RIGHT: edit pane ===== */
+  .edit-pane {
+    padding: 24px 28px;
+    overflow-y: auto;
+    max-height: calc(100vh - 60px);
+    background: var(--panel);
+    border-left: 1px solid var(--line);
+  }
+
+  .edit-pane.empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-soft);
+    text-align: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    font-style: italic;
+  }
+  .edit-pane.empty::before {
+    content: '◐';
+    font-size: 80px;
+    color: var(--sun);
+    margin-bottom: 20px;
+    font-style: normal;
+  }
+
+  .edit-pane h2 {
+    margin: 0 0 20px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--sea-deep);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid var(--sun);
+    padding-bottom: 14px;
+  }
+  .edit-pane h2 .badge {
+    background: var(--sea-deep);
+    color: var(--sun);
+    padding: 4px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 2px;
+    letter-spacing: 1px;
+  }
+
+  .field { display: block; margin-bottom: 14px; }
+  .field label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 5px;
+    font-weight: 500;
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    padding: 9px 12px;
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    color: var(--ink);
+    border-radius: 2px;
+    font-family: inherit;
+    font-size: 14px;
+    transition: border-color 0.15s;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus { outline: none; border-color: var(--sea-deep); }
+  .field textarea { resize: vertical; min-height: 60px; font-family: inherit; }
+
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+  /* Image slots */
+  .image-slots {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .image-slot {
+    border: 2px dashed var(--line);
+    border-radius: 2px;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .image-slot:hover { border-color: var(--sun-deep); border-style: solid; }
+  .image-slot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .image-slot .placeholder {
+    color: var(--ink-soft);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-align: center;
+    padding: 10px;
+    line-height: 1.5;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .image-slot .side-label {
+    position: absolute;
+    top: 6px; left: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--paper);
+    background: var(--sea-deep);
+    padding: 3px 8px;
+    border-radius: 2px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* Adjust panel */
+  .adjust-panel {
+    background: var(--paper-warm);
+    border: 1.5px solid var(--sun);
+    border-radius: 2px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .adjust-panel h4 {
+    margin: 0 0 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--sun-deep);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 500;
+  }
+  .adjust-preview {
+    width: 100%;
+    max-height: 300px;
+    background: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    overflow: hidden;
+    border-radius: 2px;
+  }
+  .adjust-preview canvas {
+    max-width: 100%;
+    max-height: 300px;
+    display: block;
+  }
+  .adjust-control {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .adjust-control label {
+    flex: 0 0 90px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-weight: 500;
+  }
+  .adjust-control input[type=range] { flex: 1; accent-color: var(--sun-deep); }
+  .adjust-control .value {
+    flex: 0 0 50px;
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--sea-deep);
+  }
+  .adjust-row { display: flex; gap: 8px; margin-top: 12px; }
+  .adjust-row button { flex: 1; padding: 8px; font-size: 12px; }
+
+  .actions-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+  }
+  .actions-row button { flex: 1; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 14px 20px;
+    border-radius: 2px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 200;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.25s, transform 0.25s;
+    pointer-events: none;
+    box-shadow: 0 8px 24px rgba(10, 61, 92, 0.25);
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.ok { background: var(--olive); color: var(--paper); }
+  .toast.err { background: var(--coral); color: var(--paper); }
+  .toast.info { background: var(--sea-mid); color: var(--paper); }
+
+  /* Modal */
+  .modal-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 42, 58, 0.7);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+  }
+  .modal-bg.open { display: flex; }
+  .modal-box {
+    background: var(--paper);
+    border-top: 4px solid var(--sun);
+    padding: 28px;
+    max-width: 520px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  .modal-box h3 {
+    margin: 0 0 16px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--sea-deep);
+  }
+  .backup-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .backup-row:last-child { border-bottom: none; }
+  .backup-row .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: 0.5px;
+  }
+
+  .dirty-dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: var(--sun);
+    border-radius: 50%;
+    margin-left: 6px;
+    vertical-align: middle;
+    box-shadow: 0 0 8px var(--sun);
+  }
+  .dirty-dot.hidden { display: none; }
+
+  .help-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-soft);
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>
+    <span class="mark">◐</span>
+    Νομισματούλι
+    <span class="sub" id="item-count">(loading…)</span>
+    <span class="dirty-dot hidden" id="dirty-dot" title="Unsaved changes"></span>
+  </h1>
+  <div class="topbar-actions">
+    <button onclick="openBackups()">Backups</button>
+    <a href="/" target="_blank" class="btn">View public ↗</a>
+    <button class="primary" onclick="saveCatalog()" id="save-btn">Save</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="list-pane">
+    <div class="list-toolbar">
+      <input type="text" id="filter-q" placeholder="Search ID, title, country, year, notes…" oninput="renderList()">
+      <select id="filter-type" onchange="renderList()">
+        <option value="all">All types</option>
+        <option value="coin">Coins</option>
+        <option value="stamp">Stamps</option>
+      </select>
+      <select id="filter-status" onchange="renderList()">
+        <option value="all">All statuses</option>
+        <option value="available">Available</option>
+        <option value="reserved">Reserved</option>
+        <option value="sold">Sold</option>
+      </select>
+      <button onclick="newItem()" class="primary">+ New</button>
+    </div>
+    <div class="summary" id="summary"></div>
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Year</th>
+          <th>Price</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="list-body"></tbody>
+    </table>
+  </div>
+
+  <div class="edit-pane empty" id="edit-pane">
+    <div>Select an item on the left,<br>or click + New to add one.</div>
+  </div>
+</div>
+
+<div class="modal-bg" id="backup-modal" onclick="if(event.target===this)closeBackups()">
+  <div class="modal-box">
+    <h3>Backups <span style="font-weight:400;color:var(--ink-soft);font-size:12px;font-family:'JetBrains Mono',monospace;">· newest first · keeping last 10</span></h3>
+    <div id="backup-list"></div>
+    <div style="margin-top:16px;text-align:right;">
+      <button class="light-btn" onclick="closeBackups()">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let catalog = [];
+let selectedId = null;
+let dirty = false;
+
+let pendingImage = {
+  side: null, dataUrl: null,
+  rotate: 0, grayscale: false, brightness: 1.0, contrast: 1.0
+};
+
+async function init() {
+  await loadCatalog();
+  renderList();
+  window.addEventListener('beforeunload', e => {
+    if (dirty) { e.preventDefault(); e.returnValue = ''; }
+  });
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      saveCatalog();
+    }
+  });
+}
+
+async function loadCatalog() {
+  try {
+    const r = await fetch('/api/catalog');
+    catalog = await r.json();
+  } catch (e) {
+    toast('Failed to load catalog', 'err');
+    catalog = [];
+  }
+}
+
+function markDirty(v = true) {
+  dirty = v;
+  document.getElementById('dirty-dot').classList.toggle('hidden', !v);
+  document.getElementById('save-btn').textContent = v ? 'Save *' : 'Save';
+}
+
+async function saveCatalog() {
+  try {
+    const r = await fetch('/api/catalog', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(catalog)
+    });
+    const data = await r.json();
+    if (data.ok) {
+      markDirty(false);
+      toast(`Saved ${data.count} items`, 'ok');
+    } else {
+      toast('Save failed: ' + (data.error || 'unknown'), 'err');
+    }
+  } catch (e) {
+    toast('Save error: ' + e.message, 'err');
+  }
+}
+
+function matchesFilter(item) {
+  const t = document.getElementById('filter-type').value;
+  if (t !== 'all' && item.type !== t) return false;
+  const s = document.getElementById('filter-status').value;
+  if (s !== 'all' && item.status !== s) return false;
+  const q = document.getElementById('filter-q').value.trim().toLowerCase();
+  if (q) {
+    const hay = [
+      item.id, item.title_el, item.title_en, item.country,
+      String(item.year), item.catalog_ref, item.notes_el, item.notes_en
+    ].filter(Boolean).join(' ').toLowerCase();
+    if (!hay.includes(q)) return false;
+  }
+  return true;
+}
+
+function renderList() {
+  const filtered = catalog.filter(matchesFilter);
+  document.getElementById('item-count').textContent = `${catalog.length} items`;
+  document.getElementById('summary').textContent =
+    `${filtered.length} of ${catalog.length} matching`;
+
+  const body = document.getElementById('list-body');
+  if (filtered.length === 0) {
+    body.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--ink-soft);padding:40px;font-style:italic;">No items match filters.</td></tr>`;
+    return;
+  }
+
+  body.innerHTML = filtered.map(item => {
+    const thumb = item.images && item.images[0]
+      ? `<img class="thumb" src="/images/${item.images[0]}?t=${Date.now()}" onerror="this.outerHTML='<div class=thumb&nbsp;missing>○</div>'">`
+      : `<div class="thumb missing">○</div>`;
+    const title = item.title_en || item.title_el || '—';
+    return `
+      <tr class="row ${item.id === selectedId ? 'selected' : ''}" onclick="selectItem('${item.id}')">
+        <td>${thumb}</td>
+        <td class="mono">${item.id}</td>
+        <td>${escapeHtml(title)}</td>
+        <td>${item.year || ''}</td>
+        <td><strong>${item.price_eur != null ? item.price_eur + '€' : ''}</strong></td>
+        <td><span class="status-pill ${item.status}">${item.status || ''}</span></td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function selectItem(id) {
+  if (dirty && !confirmDiscard()) return;
+  selectedId = id;
+  pendingImage = { side: null, dataUrl: null, rotate: 0, grayscale: false, brightness: 1, contrast: 1 };
+  renderList();
+  renderEdit();
+}
+
+function confirmDiscard() {
+  return confirm('You have unsaved changes. Discard them?');
+}
+
+function newItem() {
+  const nextId = suggestNextId('C');
+  const item = {
+    id: nextId, type: 'coin', country: 'GR',
+    year: new Date().getFullYear(),
+    title_el: '', title_en: '',
+    catalog_ref: '', grade: '',
+    price_eur: 0, status: 'available',
+    images: null,
+    notes_el: '', notes_en: '',
+    son_note_el: '', son_note_en: ''
+  };
+  catalog.push(item);
+  markDirty(true);
+  selectedId = item.id;
+  pendingImage = { side: null, dataUrl: null, rotate: 0, grayscale: false, brightness: 1, contrast: 1 };
+  renderList();
+  renderEdit();
+}
+
+function suggestNextId(prefix) {
+  const prefixItems = catalog.filter(i => i.id.startsWith(prefix + '-'));
+  let max = 0;
+  for (const it of prefixItems) {
+    const m = it.id.match(/-(\d+)$/);
+    if (m) max = Math.max(max, parseInt(m[1]));
+  }
+  return `${prefix}-${String(max + 1).padStart(4, '0')}`;
+}
+
+function currentItem() {
+  return catalog.find(i => i.id === selectedId);
+}
+
+function renderEdit() {
+  const pane = document.getElementById('edit-pane');
+  const item = currentItem();
+  if (!item) {
+    pane.className = 'edit-pane empty';
+    pane.innerHTML = '<div>Select an item on the left,<br>or click + New to add one.</div>';
+    return;
+  }
+  pane.className = 'edit-pane';
+
+  const imgA = item.images && item.images[0];
+  const imgB = item.images && item.images[1];
+  const imgASrc = imgA ? `/images/${imgA}?t=${Date.now()}` : '';
+  const imgBSrc = imgB ? `/images/${imgB}?t=${Date.now()}` : '';
+
+  const adjustPanel = pendingImage.dataUrl ? renderAdjustPanel() : '';
+
+  pane.innerHTML = `
+    <h2>
+      Edit item
+      <span class="badge" id="id-badge">${item.id}</span>
+    </h2>
+
+    <div class="image-slots">
+      <div class="image-slot" onclick="pickImage('a')">
+        ${imgA ? `<img src="${imgASrc}">` : '<div class="placeholder">+ Add<br>front</div>'}
+        <div class="side-label">A · FRONT</div>
+      </div>
+      <div class="image-slot" onclick="pickImage('b')">
+        ${imgB ? `<img src="${imgBSrc}">` : '<div class="placeholder">+ Add<br>back</div>'}
+        <div class="side-label">B · BACK</div>
+      </div>
+    </div>
+    <input type="file" id="file-input" accept="image/*" style="display:none" onchange="onFilePicked(event)">
+
+    ${adjustPanel}
+
+    <div class="field-row">
+      <div class="field">
+        <label>ID</label>
+        <input type="text" id="f-id" value="${escapeAttr(item.id)}" onchange="updateField('id', this.value)">
+        <div class="help-text">C-NNNN coins · S-NNNN stamps</div>
+      </div>
+      <div class="field">
+        <label>Type</label>
+        <select id="f-type" onchange="updateField('type', this.value)">
+          <option value="coin" ${item.type === 'coin' ? 'selected' : ''}>Coin</option>
+          <option value="stamp" ${item.type === 'stamp' ? 'selected' : ''}>Stamp</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field-row-3">
+      <div class="field">
+        <label>Country</label>
+        <input type="text" id="f-country" value="${escapeAttr(item.country || '')}" oninput="updateField('country', this.value.toUpperCase())" maxlength="3">
+      </div>
+      <div class="field">
+        <label>Year</label>
+        <input type="number" id="f-year" value="${item.year || ''}" onchange="updateField('year', parseInt(this.value) || null)">
+      </div>
+      <div class="field">
+        <label>Status</label>
+        <select id="f-status" onchange="updateField('status', this.value)">
+          <option value="available" ${item.status === 'available' ? 'selected' : ''}>Available</option>
+          <option value="reserved" ${item.status === 'reserved' ? 'selected' : ''}>Reserved</option>
+          <option value="sold" ${item.status === 'sold' ? 'selected' : ''}>Sold</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Title (Greek)</label>
+      <input type="text" id="f-title-el" value="${escapeAttr(item.title_el || '')}" onchange="updateField('title_el', this.value)">
+    </div>
+
+    <div class="field">
+      <label>Title (English)</label>
+      <input type="text" id="f-title-en" value="${escapeAttr(item.title_en || '')}" onchange="updateField('title_en', this.value)">
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Catalog ref</label>
+        <input type="text" id="f-ref" value="${escapeAttr(item.catalog_ref || '')}" onchange="updateField('catalog_ref', this.value)" placeholder="KM# 111, Hellas #734…">
+      </div>
+      <div class="field">
+        <label>Grade</label>
+        <input type="text" id="f-grade" value="${escapeAttr(item.grade || '')}" onchange="updateField('grade', this.value)" placeholder="XF, MNH, VF…">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Price (€)</label>
+      <input type="number" id="f-price" value="${item.price_eur != null ? item.price_eur : ''}" step="0.5" onchange="updateField('price_eur', parseFloat(this.value) || 0)">
+    </div>
+
+    <div class="field">
+      <label>Notes (Greek)</label>
+      <textarea id="f-notes-el" onchange="updateField('notes_el', this.value)">${escapeHtml(item.notes_el || '')}</textarea>
+    </div>
+
+    <div class="field">
+      <label>Notes (English)</label>
+      <textarea id="f-notes-en" onchange="updateField('notes_en', this.value)">${escapeHtml(item.notes_en || '')}</textarea>
+    </div>
+
+    <div class="field">
+      <label>Son's note (Greek) — optional</label>
+      <textarea id="f-son-el" onchange="updateField('son_note_el', this.value)">${escapeHtml(item.son_note_el || '')}</textarea>
+    </div>
+
+    <div class="field">
+      <label>Son's note (English) — optional</label>
+      <textarea id="f-son-en" onchange="updateField('son_note_en', this.value)">${escapeHtml(item.son_note_en || '')}</textarea>
+    </div>
+
+    <div class="actions-row">
+      <button class="light-btn" onclick="duplicateItem()">Duplicate</button>
+      <button class="danger" onclick="deleteItem()">Delete</button>
+    </div>
+  `;
+
+  if (pendingImage.dataUrl) {
+    setTimeout(drawAdjustPreview, 10);
+  }
+}
+
+function renderAdjustPanel() {
+  const pi = pendingImage;
+  return `
+    <div class="adjust-panel">
+      <h4>Adjust · side ${pi.side.toUpperCase()} · ${pi.side === 'a' ? 'front' : 'back'}</h4>
+      <div class="adjust-preview">
+        <canvas id="adjust-canvas"></canvas>
+      </div>
+      <div class="adjust-control">
+        <label>Rotate</label>
+        <input type="range" id="a-rotate" min="0" max="3" step="1" value="${pi.rotate / 90}" oninput="onAdjust()">
+        <span class="value" id="v-rotate">${pi.rotate}°</span>
+      </div>
+      <div class="adjust-control">
+        <label>Brightness</label>
+        <input type="range" id="a-bright" min="0.5" max="1.8" step="0.05" value="${pi.brightness}" oninput="onAdjust()">
+        <span class="value" id="v-bright">${pi.brightness.toFixed(2)}</span>
+      </div>
+      <div class="adjust-control">
+        <label>Contrast</label>
+        <input type="range" id="a-contrast" min="0.5" max="1.8" step="0.05" value="${pi.contrast}" oninput="onAdjust()">
+        <span class="value" id="v-contrast">${pi.contrast.toFixed(2)}</span>
+      </div>
+      <div class="adjust-control">
+        <label>Grayscale</label>
+        <input type="checkbox" id="a-gray" ${pi.grayscale ? 'checked' : ''} onchange="onAdjust()" style="flex:0;accent-color:var(--sun-deep);">
+        <span style="flex:1"></span>
+      </div>
+      <div class="adjust-row">
+        <button class="light-btn" onclick="cancelImage()">Cancel</button>
+        <button class="primary" onclick="applyImage()">Apply</button>
+      </div>
+    </div>
+  `;
+}
+
+function updateField(key, value) {
+  const item = currentItem();
+  if (!item) return;
+
+  if (key === 'id') {
+    if (!/^[A-Za-z0-9_-]{1,40}$/.test(value)) {
+      toast('Invalid ID', 'err');
+      renderEdit();
+      return;
+    }
+    if (value !== item.id && catalog.some(i => i.id === value)) {
+      toast('ID already taken', 'err');
+      renderEdit();
+      return;
+    }
+    if (value !== item.id && item.images) {
+      if (!confirm('Renaming the ID will detach existing image filenames. Continue?\n\n(You can re-upload photos afterwards.)')) {
+        renderEdit();
+        return;
+      }
+      item.images = null;
+    }
+    item.id = value;
+    selectedId = value;
+    document.getElementById('id-badge').textContent = value;
+  } else {
+    item[key] = value;
+  }
+  markDirty(true);
+  renderList();
+}
+
+function duplicateItem() {
+  const item = currentItem();
+  if (!item) return;
+  const prefix = item.id.startsWith('S-') ? 'S' : 'C';
+  const newId = suggestNextId(prefix);
+  const copy = JSON.parse(JSON.stringify(item));
+  copy.id = newId;
+  copy.images = null;
+  copy.status = 'available';
+  catalog.push(copy);
+  markDirty(true);
+  selectedId = newId;
+  renderList();
+  renderEdit();
+  toast(`Duplicated → ${newId}`, 'ok');
+}
+
+async function deleteItem() {
+  const item = currentItem();
+  if (!item) return;
+  if (!confirm(`Delete ${item.id}?\n\nThis removes the item and its images. The change is saved on the next Save.`)) return;
+
+  if (item.images) {
+    for (const fn of item.images) {
+      if (!fn) continue;
+      try {
+        await fetch('/api/delete-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filename: fn })
+        });
+      } catch (e) {}
+    }
+  }
+
+  catalog = catalog.filter(i => i.id !== item.id);
+  selectedId = null;
+  markDirty(true);
+  renderList();
+  renderEdit();
+  toast(`Deleted ${item.id} (remember to save)`, 'info');
+}
+
+function pickImage(side) {
+  pendingImage.side = side;
+  document.getElementById('file-input').click();
+}
+
+function onFilePicked(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    pendingImage.dataUrl = reader.result;
+    pendingImage.rotate = 0;
+    pendingImage.brightness = 1.0;
+    pendingImage.contrast = 1.0;
+    pendingImage.grayscale = false;
+    renderEdit();
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+}
+
+function onAdjust() {
+  pendingImage.rotate = parseInt(document.getElementById('a-rotate').value) * 90;
+  pendingImage.brightness = parseFloat(document.getElementById('a-bright').value);
+  pendingImage.contrast = parseFloat(document.getElementById('a-contrast').value);
+  pendingImage.grayscale = document.getElementById('a-gray').checked;
+  document.getElementById('v-rotate').textContent = pendingImage.rotate + '°';
+  document.getElementById('v-bright').textContent = pendingImage.brightness.toFixed(2);
+  document.getElementById('v-contrast').textContent = pendingImage.contrast.toFixed(2);
+  drawAdjustPreview();
+}
+
+function drawAdjustPreview() {
+  const canvas = document.getElementById('adjust-canvas');
+  if (!canvas || !pendingImage.dataUrl) return;
+  const img = new Image();
+  img.onload = () => {
+    const rot = pendingImage.rotate;
+    const maxSide = 400;
+    let w = img.width, h = img.height;
+    const scale = Math.min(1, maxSide / Math.max(w, h));
+    w *= scale; h *= scale;
+    if (rot === 90 || rot === 270) {
+      canvas.width = h; canvas.height = w;
+    } else {
+      canvas.width = w; canvas.height = h;
+    }
+    const ctx = canvas.getContext('2d');
+    ctx.save();
+    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.rotate(rot * Math.PI / 180);
+    ctx.filter = `brightness(${pendingImage.brightness}) contrast(${pendingImage.contrast}) ${pendingImage.grayscale ? 'grayscale(1)' : ''}`;
+    ctx.drawImage(img, -w / 2, -h / 2, w, h);
+    ctx.restore();
+  };
+  img.src = pendingImage.dataUrl;
+}
+
+function cancelImage() {
+  pendingImage = { side: null, dataUrl: null, rotate: 0, grayscale: false, brightness: 1, contrast: 1 };
+  renderEdit();
+}
+
+async function applyImage() {
+  const item = currentItem();
+  if (!item || !pendingImage.dataUrl) return;
+  try {
+    const r = await fetch('/api/upload-image', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        item_id: item.id,
+        side: pendingImage.side,
+        data_url: pendingImage.dataUrl,
+        rotate: pendingImage.rotate,
+        grayscale: pendingImage.grayscale,
+        brightness: pendingImage.brightness,
+        contrast: pendingImage.contrast
+      })
+    });
+    const data = await r.json();
+    if (!data.ok) {
+      toast('Upload failed: ' + (data.error || 'unknown'), 'err');
+      return;
+    }
+    const sideIdx = pendingImage.side === 'a' ? 0 : 1;
+    if (!item.images) item.images = [null, null];
+    item.images[sideIdx] = data.filename;
+    markDirty(true);
+    pendingImage = { side: null, dataUrl: null, rotate: 0, grayscale: false, brightness: 1, contrast: 1 };
+    renderList();
+    renderEdit();
+    toast(`Saved ${data.filename} · ${Math.round(data.bytes / 1024)} KB`, 'ok');
+  } catch (e) {
+    toast('Upload error: ' + e.message, 'err');
+  }
+}
+
+async function openBackups() {
+  const modal = document.getElementById('backup-modal');
+  const list = document.getElementById('backup-list');
+  list.innerHTML = '<div style="color:var(--ink-soft);font-style:italic;">Loading…</div>';
+  modal.classList.add('open');
+  try {
+    const r = await fetch('/api/backups');
+    const data = await r.json();
+    if (data.length === 0) {
+      list.innerHTML = '<div style="color:var(--ink-soft);font-style:italic;padding:20px;text-align:center;">No backups yet.</div>';
+      return;
+    }
+    list.innerHTML = data.map(b => `
+      <div class="backup-row">
+        <div>
+          <div class="mono" style="color:var(--sea-deep);font-weight:500;">${b.name}</div>
+          <div class="meta">${b.mtime} · ${Math.round(b.size / 1024)} KB</div>
+        </div>
+        <button class="light-btn" onclick="restoreBackup('${b.name}')">Restore</button>
+      </div>
+    `).join('');
+  } catch (e) {
+    list.innerHTML = `<div style="color:var(--coral);">Error: ${e.message}</div>`;
+  }
+}
+
+function closeBackups() {
+  document.getElementById('backup-modal').classList.remove('open');
+}
+
+async function restoreBackup(name) {
+  if (!confirm(`Restore ${name}?\n\nThe current catalog will be backed up first, then replaced.`)) return;
+  try {
+    const r = await fetch('/api/restore-backup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name })
+    });
+    const data = await r.json();
+    if (data.ok) {
+      await loadCatalog();
+      selectedId = null;
+      markDirty(false);
+      renderList();
+      renderEdit();
+      closeBackups();
+      toast(`Restored ${data.count} items`, 'ok');
+    } else {
+      toast('Restore failed: ' + (data.error || 'unknown'), 'err');
+    }
+  } catch (e) {
+    toast('Restore error: ' + e.message, 'err');
+  }
+}
+
+function toast(msg, kind = 'info') {
+  const el = document.getElementById('toast');
+  el.className = `toast ${kind}`;
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2400);
+}
+
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+}
+function escapeAttr(s) {
+  return String(s || '').replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+init();
+</script>
+
+</body>
+</html>

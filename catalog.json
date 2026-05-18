@@ -116,5 +116,45 @@
     "notes_en": "GREECE, lot of 50 stamps, 3 euros, Stamped",
     "son_note_el": "",
     "son_note_en": ""
+  },
+  {
+    "id": "C-0008",
+    "type": "stamp",
+    "country": "",
+    "year": null,
+    "title_el": "#736_44_ITALY",
+    "title_en": "#736_44_ITALY",
+    "catalog_ref": "",
+    "grade": "USED",
+    "price_eur": 2.5,
+    "status": "available",
+    "images": [
+      "C-0008-a.jpg",
+      null
+    ],
+    "notes_el": "ITALY, λοτ από 44 γραμματόσημα, 3 ευρώ, Σφραγισμένα\n",
+    "notes_en": "ITALY, lot of 44 stamps, 3 euros, Cancelled",
+    "son_note_el": "",
+    "son_note_en": ""
+  },
+  {
+    "id": "C-0009",
+    "type": "stamp",
+    "country": "",
+    "year": null,
+    "title_el": "TURKEY [23] #737 ",
+    "title_en": "TURKEY [23] #737 ",
+    "catalog_ref": "",
+    "grade": "USED",
+    "price_eur": 2.5,
+    "status": "available",
+    "images": [
+      "C-0009-a.jpg",
+      null
+    ],
+    "notes_el": "TURKEY, λοτ από 23 γραμματόσημα, 2,5 ευρώ, Σφραγισμένα\n",
+    "notes_en": "TURKEY, lot of 23 stamps, 2.5 euros, Cancelled",
+    "son_note_el": "",
+    "son_note_en": ""
   }
 ]
